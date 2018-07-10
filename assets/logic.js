@@ -10,48 +10,79 @@ var config = {
 };
 firebase.initializeApp(config);
 
-var database = firebase.database();
 
-// Create Initial Values 
-var trainName = "no name";
-var destination = "";
-var freq = 0;
-var nextArrival = "";
-var minsAway = 0;
+//MAIN JS FUNCTIONS
+$(document).ready(function () {
+  // Link to Firebase
+  var database = firebase.database();
 
-// Snapshot of Current Page
-database.ref().on("value", function (snapshot) {
-  var val = snapshot.val();
-  console.log(val);
+  // SETUP VARIABLES 
+  // =================================
+  // Create Initial Values 
+  var trainName = " ";
+  var destination = " ";
+  var trainTimeInput = 0;
+  var frequencyInput = 0;
 
-  trainName = val.trainName;
-  $("#nameDisplay").text(trainName);
-  destination = val.destination;
-  $("#destiantionDisplay").text(destination);
+  // MAIN PROCESS: ADDING NEW TRAIN
+  // =================================
+  // adding data to firebase 
+  $("#submit-btn").on("click", function (event) {
+    event.preventDefault();
 
+    // Assign form inputs into variables 
+    trainName = $("#trainNameInput").val().trim();
+    destination = $("#destinationInput").val().trim();
+    trainTimeInput = moment($("#trainTimeInput").val().trim(), "HH:mm").subtract(10, "years").format("X");
+    frequencyInput = $("#frequencyInput").val().trim();
 
-})
+    // create object for firebase
+    var newTrain = {
+      name: trainName,
+      destination: destination,
+      trainTime: trainTimeInput,
+      frequency: frequencyInput
+    }
 
-// adding data to firebase 
-$("#submit-btn").on("click", function () {
-  event.preventDefault();
+    // connect train info to firebase 
+    database.ref().push(newTrain);
 
-  trainName = $("#newTrain").val().trim();
-  destination = $("#newDestination").val().trim();
-  freq = $("#newFreq").val().trim();
+    // clear textboxes
+    $("#trainNameInput").val("");
+    $("#destinationInput").val("");
+    $("#trainTimeInput").val("");
+    $("#frequencyInput").val("");
 
-  console.log(trainName, destination, freq);
+  });
+  
+  //MAIN PROCESS : SNAPSHOT AND UPDATING TABLE
+  // ===========================================
+  database.ref().on("child_added", function (childSnapshot, prevChildKey) {
+    //for testing
+    console.log(childSnapshot.val());
 
-$("#table tr:last").after(trainName); 
+    // assign firebase variables to snapshots to use as shorthand
+    var firebaseName = childSnapshot.val().name;
+    var firebaseDestination = childSnapshot.val().destination;
+    var firebaseTrainTimeInput = childSnapshot.val().trainTime;
+    var firebaseFrequency = childSnapshot.val().frequency;
 
+    // Time Conversions 
+    var firstTimeConverted = moment(firebaseTrainTimeInput, "hh:mm").subtract(1, "years");
+    var diffTime = moment().diff(moment.unix(firstTimeConverted), "minutes");
+    var timeRemainder = diffTime % firebaseFrequency;
+    var minutes = firebaseFrequency - (-timeRemainder);
+    var nextTrainArrival = moment().add(minutes, "minutes").format("hh:mm");
 
-})
+    //Test for correct times and info
+    console.log(moment().format("hh:mm A"));
+    console.log("Minutes " + minutes);
+    console.log("Next Arrival " + nextTrainArrival);
+    console.log("Frequency " + firebaseFrequency);
+    console.log("Remainder " + timeRemainder);
 
-database.ref().push({
-trainName: trainName,
-destination: destination,
-freq: freq
-})
+    // Append train info to table on page 
+    $("#trainTable").append("<tr><td>" + firebaseName + "</td><td>" + firebaseDestination + "</td><td>" + firebaseFrequency + " mins" + "</td><td>" + nextTrainArrival + "</td><td>" + minutes + "</td></tr>");
 
-
-
+  });
+});
