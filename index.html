@@ -7,6 +7,8 @@
     <!--BootStrap-->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
         crossorigin="anonymous">
+        <!--Link to Custom CSS-->
+        <link rel="stylesheet" type="text/css" href="assets/style.css">
     <!--JQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!--FireBase Link-->
@@ -18,17 +20,18 @@
 </head>
 
 <body>
+<div id="background"> 
     <div>
-        <h1 class="jumbotron bg-light font-weight-bold text-center mx-5">Train Scheduler</h1>
+        <h1 class="jumbotron col-lg-12 bg-light font-weight-bold text-center mx-5" id="title">Train Scheduler</h1>
     </div>
     <div class="container">
 
         <!--Current Train Schedule-->
         <div class="row">
             <div class="col-lg-12 m-3">
-                <div class="card ">
-                    <div class="card-heading bg-primary text-white border rounded">
-                        <h3 class="card-title ">Current Train Schedule</h3>
+                <div class="card">
+                    <div class="card-heading " id="scheduleHeader">
+                        <h3 class="card-title m-2 p-3 border rounded" id="scheduleTitle" >Current Train Schedule</h3>
                     </div>
                     <div class="card-body">
                         <table id="table" class="table" id="">
@@ -52,9 +55,9 @@
         <!--Form to Fill in New Train-->
         <div class="row">
             <div class="col-lg-12 m-3">
-                <div class="card ">
-                    <div class="card-heading">
-                        <h3 class="card-title">Add New Train</h3>
+                <div class="card">
+                    <div class="card-heading" id="newTrainHeader">
+                        <h3 class="card-title m-2 p-3 border rounded" id="newTrainTitle">Add New Train</h3>
                     </div>
                     <div class="card-body">
                         <form role="form">
@@ -74,11 +77,13 @@
                                 <label for="">Frequency (min)</label>
                                 <input type="number" class="form-control" id="frequencyInput">
                             </div>
-                            <button type="submit" id="submit-btn">Submit</button>
+                            <button type="submit" class="rounded py-1 px-3" id="submit-btn">Submit</button>
                         </form>
                     </div>
                 </div>
             </div>
+        </div>
+
         </div>
 
 </body>

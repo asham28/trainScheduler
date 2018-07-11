@@ -1,0 +1,19 @@
+body {
+    background: linear-gradient(pink, violet);
+}
+
+#title {
+ background-image: url(images/background.jpg); 
+ color: black; 
+}
+
+#scheduleTitle, 
+#newTrainTitle,
+#submit-btn {
+    background-color: goldenrod; 
+    color: blanchedalmond; 
+}
+
+#background {
+    margin: 10px auto; 
+}
